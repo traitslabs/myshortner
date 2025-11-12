@@ -1,39 +1,16 @@
 {
   "version": 2,
   "functions": {
-    "api/index.php": {
-      "runtime": "vercel-php@0.7.4"
-    },
-    "api/dashboard.php": {
-      "runtime": "vercel-php@0.7.4"
-    },
-    "api/logout.php": {
-      "runtime": "vercel-php@0.7.4"
-    },
-    "api/r.php": {
-      "runtime": "vercel-php@0.7.4"
-    }
+    "api/index.php": { "runtime": "vercel-php@0.7.4" },
+    "api/dashboard.php": { "runtime": "vercel-php@0.7.4" },
+    "api/logout.php": { "runtime": "vercel-php@0.7.4" },
+    "api/r.php": { "runtime": "vercel-php@0.7.4" }
   },
   "routes": [
-    {
-      "src": "/",
-      "dest": "/api/index.php"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "/api/dashboard.php"
-    },
-    {
-      "src": "/logout",
-      "dest": "/api/logout.php"
-    },
-    {
-      "src": "/r",
-      "dest": "/api/r.php"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
-    }
+    { "src": "/", "dest": "/api/index.php" },
+    { "src": "/dashboard", "dest": "/api/dashboard.php" },
+    { "src": "/logout", "dest": "/api/logout.php" },
+    { "src": "/r", "dest": "/api/r.php" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
   ]
 }
