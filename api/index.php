@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+<?php header('Content-Type: text/html; charset=utf-8'); session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
