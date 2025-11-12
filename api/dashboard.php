@@ -1,4 +1,4 @@
-<?php
+<?php header('Content-Type: text/html; charset=utf-8');
 session_start();
 if (!$_SESSION['user']) { header("Location: index.php"); exit; }
 $user = $_SESSION['user'];
@@ -54,4 +54,5 @@ if ($_POST['url']) {
     </table>
 </div>
 </body>
+
 </html>
