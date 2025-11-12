@@ -1,4 +1,4 @@
-<?php
+<?php header('Content-Type: text/html; charset=utf-8');
 $slug = trim($_SERVER['PATH_INFO'] ?? '', '/');
 if (!preg_match('/^[A-Z0-9]{6}$/', $slug)) { http_response_code(404); die("404"); }
 
@@ -21,4 +21,5 @@ if (strpos($ua, 'facebook') !== false || strpos($ua, 'facebot') !== false || str
 
 header("Location: $dest");
 exit;
+
 ?>
