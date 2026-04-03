@@ -33,7 +33,11 @@ app.use('/api/', apiLimiter);
 
 // Serve static client build in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', '..', 'client', 'dist')));
+  // Support both standard layout and cPanel layout
+  const distPath = require('fs').existsSync(path.join(__dirname, '..', 'dist'))
+    ? path.join(__dirname, '..', 'dist')
+    : path.join(__dirname, '..', '..', 'client', 'dist');
+  app.use(express.static(distPath));
 }
 
 // API routes
@@ -46,8 +50,11 @@ app.use('/', redirectRoutes);
 
 // Serve client app for unmatched routes in production
 if (process.env.NODE_ENV === 'production') {
+  const distPath = require('fs').existsSync(path.join(__dirname, '..', 'dist'))
+    ? path.join(__dirname, '..', 'dist')
+    : path.join(__dirname, '..', '..', 'client', 'dist');
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', '..', 'client', 'dist', 'index.html'));
+    res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 
@@ -61,13 +68,22 @@ app.use((err, req, res, next) => {
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/urlshortener')
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    // Only listen on PORT if not running under Passenger (cPanel)
+    if (typeof(PhusionPassenger) === 'undefined') {
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    }
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err);
     process.exit(1);
   });
+
+// Support cPanel Phusion Passenger
+if (typeof(PhusionPassenger) !== 'undefined') {
+  PhusionPassenger.configure({ autoInstall: false });
+  app.listen('passenger');
+}
 
 module.exports = app;
