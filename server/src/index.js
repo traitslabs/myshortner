@@ -4,7 +4,16 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+// Try loading .env from multiple locations (supports both standard and cPanel layouts)
+const fs = require('fs');
+const envPaths = [
+  path.join(__dirname, '..', '.env'),           // server/.env (standard)
+  path.join(__dirname, '..', '..', '.env'),      // repo-root/.env
+  path.join(__dirname, '..', '..', 'server', '.env') // cPanel: root/server/.env
+];
+const envPath = envPaths.find(p => fs.existsSync(p));
+if (envPath) require('dotenv').config({ path: envPath });
+else require('dotenv').config();
 
 const linkRoutes = require('./routes/links');
 const adminRoutes = require('./routes/admin');
