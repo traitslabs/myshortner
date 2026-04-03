@@ -64,26 +64,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Connect to MongoDB and start server
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/urlshortener')
   .then(() => {
     console.log('Connected to MongoDB');
-    // Only listen on PORT if not running under Passenger (cPanel)
-    if (typeof(PhusionPassenger) === 'undefined') {
-      app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-    }
   })
   .catch((err) => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
+    console.error('MongoDB connection error:', err.message);
+    // Don't exit — let the server start so cPanel doesn't show 503
+    // Routes will fail gracefully if DB is unavailable
   });
 
-// Support cPanel Phusion Passenger
-if (typeof(PhusionPassenger) !== 'undefined') {
-  PhusionPassenger.configure({ autoInstall: false });
-  app.listen('passenger');
-}
+// Start server — works for both standalone and cPanel Passenger
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;
