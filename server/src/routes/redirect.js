@@ -55,7 +55,7 @@ router.get('/:code', async (req, res) => {
 
     // Add randomized delay variation (0-2 extra seconds)
     const extraDelay = Math.random() * 2;
-    const totalDelay = (link.redirectDelay || 3) + extraDelay;
+    const totalDelay = (link.redirectDelay ?? 3) + extraDelay;
 
     // Serve the funnel landing page
     res.send(getFunnelPage(link, totalDelay));

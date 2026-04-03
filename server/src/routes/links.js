@@ -32,7 +32,11 @@ router.post('/', authenticate, async (req, res) => {
       createdBy: req.user._id
     });
     if (existingLink) {
-      return res.json(existingLink);
+      const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+      return res.json({
+        ...existingLink.toObject(),
+        shortUrl: `${baseUrl}/${existingLink.shortCode}`
+      });
     }
 
     // Handle custom alias
@@ -172,6 +176,11 @@ router.put('/:id', authenticate, async (req, res) => {
 
     for (const key of allowedUpdates) {
       if (req.body[key] !== undefined) {
+        if (key === 'originalUrl') {
+          if (!validator.isURL(req.body[key], { require_protocol: true })) {
+            return res.status(400).json({ error: 'A valid URL with protocol (http/https) is required' });
+          }
+        }
         link[key] = req.body[key];
       }
     }
